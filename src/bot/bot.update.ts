@@ -86,8 +86,10 @@ export class BotUpdate {
     if (totals.length === 0) {
       return ctx.reply('No hay gastos registrados aún.');
     }
-    const diferencia = totals[0].total > totals[1].total ? totals[0].total - totals[1].total : totals[1].total - totals[0].total;
-    
+    const total0 = totals[0]?.total ?? 0;
+    const total1 = totals[1]?.total ?? 0;
+    const diferencia = Math.abs(total0 - total1);
+
     const message = totals
       .map(t => `${t.userName}: $${this.formatMoney(t.total)}`)
       .join('\n');
