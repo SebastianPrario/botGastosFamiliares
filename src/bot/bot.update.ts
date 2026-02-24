@@ -118,7 +118,15 @@ export class BotUpdate {
     if (!this.isAuthorized(ctx)) return ctx.reply('No autorizado.');
 
     await this.expensesService.clearAll();
-    await ctx.reply('⚠️ Todos los gastos han sido borrados.');
+    await ctx.reply('⚠️ Todos los gastos han sido marcados como pagados/cancelados.');
+  }
+
+  @Command('borrar')
+  async onBorrar(@Ctx() ctx: Context) {
+    if (!this.isAuthorized(ctx)) return ctx.reply('No autorizado.');
+
+    await this.expensesService.clearforAll();
+    await ctx.reply('⚠️ Todos los gastos han sido borrados correctamente.');
   }
 
   @On('text')

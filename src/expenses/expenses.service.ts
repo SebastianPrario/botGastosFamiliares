@@ -55,4 +55,7 @@ export class ExpensesService {
   async clearAll(): Promise<void> {
     await this.expensesRepository.update({ isSettled: false }, { isSettled: true });
   }
+   async clearforAll(): Promise<void> {
+    await this.expensesRepository.clear();
+  }
 }
