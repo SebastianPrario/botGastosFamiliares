@@ -9,16 +9,29 @@ import { Expense } from './expenses/expense.entity';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
-    TypeOrmModule.forRoot({
-      type: 'sqlite',
-      database: 'database.sqlite',
-      entities: [Expense],
-      synchronize: true, // Solo para desarrollo
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => ({
+        type: 'postgres' as const,
+        url: configService.get<string>('DATABASE_URL'),
+        entities: [Expense],
+        synchronize: true, // Solo para desarrollo
+        ssl: configService.get<string>('NODE_ENV') === 'production'
+          ? { rejectUnauthorized: false }
+          : false,
+      }),
+      inject: [ConfigService],
     }),
     TelegrafModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
         token: configService.get<string>('TELEGRAM_BOT_TOKEN') || '',
+        launchOptions: configService.get<string>('WEBHOOK_DOMAIN') ? {
+          webhook: {
+            domain: configService.get<string>('WEBHOOK_DOMAIN') || '',
+            hookPath: '/api/webhook',
+          },
+        } : undefined,
       }),
       inject: [ConfigService],
     }),

@@ -11,7 +11,7 @@ export class Expense {
   @Column('decimal', { precision: 10, scale: 2 })
   amount: number;
 
-  @Column()
+  @Column({ type: 'bigint' })
   userId: number;
 
   @Column()

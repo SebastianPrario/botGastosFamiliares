@@ -16,17 +16,22 @@ export class BotUpdate {
     const userId = ctx.from?.id.toString();
     return userId ? authorizedIds.includes(userId) : false;
   }
+  private formatMoney(amount: number): string {
+  return amount.toLocaleString('es-AR', 
+    { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
 
   @Start()
   async onStart(@Ctx() ctx: Context) {
     await ctx.reply(
       '¡Hola! Soy tu asistente de gastos familiares.\n\n' +
       'Comandos disponibles:\n' +
-      '/gasto [categoría] [monto] [descripción] - Registrar un gasto\n' +
+      '/gasto [categoría] [monto] - Registrar un gasto\n' +
       '/total - Ver el total acumulado por integrante\n' +
       '/resumen - Ver totales del mes por categoría\n' +
       '/cancelado - Borrar todos los registros (Cuidado)\n' +
-      '/ayuda - Ver este mensaje nuevamente'
+      '/borrar - Borrar todos los registros (Cuidado)\n' +
+      '/help - Ver este mensaje nuevamente'
     );
   }
 
@@ -41,7 +46,7 @@ export class BotUpdate {
       return ctx.reply('No estás autorizado para usar este bot.');
     }
 
-    // El formato es: /gasto Categoría Monto Descripción
+    // El formato es: /gasto Categoría Monto 
     const text = (ctx.message as any).text;
     const parts = text.split(' ').slice(1);
 
@@ -67,7 +72,7 @@ export class BotUpdate {
         userId: ctx.from.id,
         userName: ctx.from.first_name || ctx.from.username || 'Anonimo',
       });
-      await ctx.reply(`✅ Gasto registrado: ${category} - $${amount}`);
+      await ctx.reply(`✅ Gasto registrado: ${category} - $${this.formatMoney(amount)}`);
     } catch (error) {
       await ctx.reply('❌ Error al guardar el gasto.');
     }
@@ -81,12 +86,13 @@ export class BotUpdate {
     if (totals.length === 0) {
       return ctx.reply('No hay gastos registrados aún.');
     }
-
+    const diferencia = totals[0].total > totals[1].total ? totals[0].total - totals[1].total : totals[1].total - totals[0].total;
+    
     const message = totals
-      .map(t => `${t.userName}: $${t.total.toFixed(2)}`)
+      .map(t => `${t.userName}: $${this.formatMoney(t.total)}`)
       .join('\n');
     
-    await ctx.reply(`📊 TOTAL ACUMULADO POR INTEGRANTE:\n\n${message}`);
+    await ctx.reply(`📊 TOTAL ACUMULADO POR INTEGRANTE:\n\n${message}\n\nDiferencia: $${this.formatMoney(diferencia)}\n\nA Cancelar: $${this.formatMoney(diferencia/2)}`);
   }
 
   @Command('resumen')
@@ -94,15 +100,15 @@ export class BotUpdate {
     if (!this.isAuthorized(ctx)) return ctx.reply('No autorizado.');
 
     const totals = await this.expensesService.getMonthlyTotalsByCategory();
-    if (totals.length === 0) {
+    if (totals[0].length === 0) {
       return ctx.reply('No hay gastos registrados este mes.');
     }
-
-    const message = totals
-      .map(t => `${t.category}: $${t.total.toFixed(2)}`)
+    const total = totals[0].reduce((acc, t) => acc + t.total, 0);
+    const message = totals[0]
+      .map(t => `${t.category}: $${this.formatMoney(t.total)}`)
       .join('\n');
-    
-    await ctx.reply(`📅 TOTALES DEL MES POR CATEGORÍA:\n\n${message}`);
+    const month = totals[1].toLocaleString('es-ES', { month: 'long' });
+    await ctx.reply(`📅 TOTALES DEL MES DE ${month.toUpperCase()}:\n\n${message}\n\nTotal: $${this.formatMoney(total)}`);
   }
 
   @Command('cancelado')

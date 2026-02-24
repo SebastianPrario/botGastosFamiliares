@@ -34,3 +34,4 @@ database.sqlite-journal
 
 # Custom
 errors.txt
+.vercel

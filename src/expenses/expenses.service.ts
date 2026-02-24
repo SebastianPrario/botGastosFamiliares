@@ -30,7 +30,7 @@ export class ExpensesService {
     }));
   }
 
-  async getMonthlyTotalsByCategory(): Promise<{ category: string; total: number }[]> {
+  async getMonthlyTotalsByCategory(): Promise< [{category: string; total: number} [],Date] > {
     const now = new Date();
     const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
     const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
@@ -45,11 +45,11 @@ export class ExpensesService {
       })
       .groupBy('expense.category')
       .getRawMany();
-
-    return result.map(r => ({
+    const result2 = result.map(r => ({
       category: r.category,
       total: parseFloat(r.total)
-    }));
+    }))
+    return [result2, now];
   }
 
   async clearAll(): Promise<void> {
