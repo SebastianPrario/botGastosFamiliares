@@ -55,7 +55,14 @@ export class ExpensesService {
   async clearAll(): Promise<void> {
     await this.expensesRepository.update({ isSettled: false }, { isSettled: true });
   }
-   async clearforAll(): Promise<void> {
+  async clearforAll(): Promise<void> {
     await this.expensesRepository.clear();
+  }
+
+  async getLastTen(): Promise<Expense[]> {
+    return this.expensesRepository.find({
+      order: { createdAt: 'DESC' },
+      take: 10,
+    });
   }
 }

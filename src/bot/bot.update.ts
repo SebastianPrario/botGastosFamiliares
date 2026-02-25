@@ -29,6 +29,7 @@ export class BotUpdate {
       '/gasto [categoría] [monto] - Registrar un gasto\n' +
       '/total - Ver el total acumulado por integrante\n' +
       '/resumen - Ver totales del mes por categoría\n' +
+      '/ultimos - Ver los últimos 10 consumos registrados\n' +
       '/cancelado - Borrar todos los registros (Cuidado)\n' +
       '/borrar - Borrar todos los registros (Cuidado)\n' +
       '/help - Ver este mensaje nuevamente'
@@ -127,6 +128,22 @@ export class BotUpdate {
 
     await this.expensesService.clearforAll();
     await ctx.reply('⚠️ Todos los gastos han sido borrados correctamente.');
+  }
+
+  @Command('ultimos')
+  async onUltimos(@Ctx() ctx: Context) {
+    if (!this.isAuthorized(ctx)) return ctx.reply('No autorizado.');
+
+    const lastTen = await this.expensesService.getLastTen();
+    if (lastTen.length === 0) {
+      return ctx.reply('No hay consumos registrados.');
+    }
+
+    const message = lastTen
+      .map(e => `👤 ${e.userName}\n📂 ${e.category}: $${this.formatMoney(Number(e.amount))}\n📅 ${e.createdAt.toLocaleDateString('es-AR')}`)
+      .join('\n\n');
+
+    await ctx.reply(`📝 ÚLTIMOS 10 CONSUMOS:\n\n${message}`);
   }
 
   @On('text')
