@@ -26,11 +26,9 @@ import { Expense } from './expenses/expense.entity';
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
         token: configService.get<string>('TELEGRAM_BOT_TOKEN') || '',
-        launchOptions: configService.get<string>('WEBHOOK_DOMAIN') ? {
-          webhook: {
-            domain: configService.get<string>('WEBHOOK_DOMAIN') || '',
-            hookPath: '/api/webhook',
-          },
+        webhook: configService.get<string>('WEBHOOK_DOMAIN') ? {
+          domain: configService.get<string>('WEBHOOK_DOMAIN') || '',
+          path: '/api/webhook',
         } : undefined,
       }),
       inject: [ConfigService],
