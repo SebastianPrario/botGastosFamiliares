@@ -1,98 +1,82 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Asistente de Gastos Familiares 🤖💸
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Un bot de Telegram desarrollado con **NestJS** para gestionar y llevar un control de los gastos compartidos en el hogar de forma sencilla y eficiente.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## 🚀 Características
 
-## Description
+- **Registro de Gastos:** `/gasto` o `/g [categoría] [monto]` permite registrar rápidamente cualquier gasto realizado.
+- **Control de Totales:** `/total` muestra cuánto lleva gastado cada integrante y la diferencia a compensar.
+- **Resumen Mensual:** `/resumen` agrupa los gastos del mes actual por categorías.
+- **Historial Reciente:** `/ultimos` muestra los últimos 10 movimientos registrados.
+- **Gestión de Ciclos:** `/cancelado` permite marcar los gastos como liquidados y `/borrar` limpia el historial.
+- **Seguridad:** Sistema de autorización por ID de usuario de Telegram.
+- **Dockerizado:** Listo para desplegar con Docker y Docker Compose.
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## 🛠️ Tecnologías
 
-## Project setup
+- [NestJS](https://nestjs.com/) - Framework Node.js progresivo.
+- [Telegraf](https://telegraf.js.org/) - Biblioteca para bots de Telegram.
+- [TypeORM](https://typeorm.io/) - ORM para TypeScript y JavaScript.
+- [PostgreSQL](https://www.postgresql.org/) - Base de datos relacional robusta.
+- [Docker](https://www.docker.com/) - Para despliegue en contenedores.
 
-```bash
-$ npm install
+## 📋 Requisitos Previos
+
+- [Node.js](https://nodejs.org/) (v18 o superior)
+- [npm](https://www.npmjs.com/)
+- Un token de bot proporcionado por [@BotFather](https://t.me/botfather).
+- Una base de datos PostgreSQL.
+
+## ⚙️ Configuración
+
+Crea un archivo `.env` en la raíz del proyecto basado en el siguiente esquema:
+
+```env
+TELEGRAM_BOT_TOKEN=tu_token_de_telegram
+DATABASE_URL=postgres://usuario:password@localhost:5432/db_name
+AUTHORIZED_USERS=ID1,ID2,ID3
+NODE_ENV=development
+# Opcional para producción (Webhooks)
+# WEBHOOK_DOMAIN=https://tu-dominio.com
 ```
 
-## Compile and run the project
+> **Nota:** Puedes obtener tu ID de usuario de Telegram usando bots como `@userinfobot`.
+
+## 🚀 Instalación y Ejecución
+
+### Desarrollo Local
+
+1. Instala las dependencias:
+   ```bash
+   npm install
+   ```
+
+2. Inicia la aplicación en modo desarrollo:
+   ```bash
+   npm run start:dev
+   ```
+
+### Con Docker 🐳
+
+Para levantar todo el entorno (App + Base de datos) de forma rápida:
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+docker-compose up -d
 ```
 
-## Run tests
+## 🤖 Comandos Disponibles
 
-```bash
-# unit tests
-$ npm run test
+| Comando | Descripción |
+| :--- | :--- |
+| `/start` | Inicia el bot y muestra el mensaje de bienvenida. |
+| `/gasto` o `/g [cat] [monto]` | Registra un nuevo gasto (ej: `/gasto Super 1500`). |
+| `/total` | Muestra el acumulado por cada integrante y la diferencia. |
+| `/resumen` | Totales del mes en curso agrupados por categoría. |
+| `/ultimos` | Lista los últimos 10 gastos registrados. |
+| `/cancelado` | Marca todos los gastos como liquidados. |
+| `/borrar` | Elimina permanentemente todos los registros. |
+| `/help` | Muestra la ayuda y lista de comandos. |
 
-# e2e tests
-$ npm run test:e2e
+## 📄 Licencia
 
-# test coverage
-$ npm run test:cov
-```
-
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
-```
-
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
-
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+Este proyecto es de uso privado y educativo.

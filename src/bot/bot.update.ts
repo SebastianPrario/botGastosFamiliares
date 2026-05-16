@@ -26,7 +26,7 @@ export class BotUpdate {
     await ctx.reply(
       '¡Hola! Soy tu asistente de gastos familiares.\n\n' +
       'Comandos disponibles:\n' +
-      '/gasto [categoría] [monto] - Registrar un gasto\n' +
+      '/gasto o /g [categoría] [monto] - Registrar un gasto\n' +
       '/total - Ver el total acumulado por integrante\n' +
       '/resumen - Ver totales del mes por categoría\n' +
       '/ultimos - Ver los últimos 10 consumos registrados\n' +
@@ -41,18 +41,18 @@ export class BotUpdate {
     await this.onStart(ctx);
   }
 
-  @Command('gasto')
+  @Command(['gasto', 'g'])
   async onGasto(@Ctx() ctx: Context) {
     if (!this.isAuthorized(ctx)) {
       return ctx.reply('No estás autorizado para usar este bot.');
     }
 
-    // El formato es: /gasto Categoría Monto 
+    // El formato es: /gasto o /g Categoría Monto 
     const text = (ctx.message as any).text;
     const parts = text.split(' ').slice(1);
 
     if (parts.length < 2) {
-      return ctx.reply('Formato incorrecto. Uso: /gasto [categoría] [monto]');
+      return ctx.reply('Formato incorrecto. Uso: /gasto o /g [categoría] [monto]');
     }
 
     const category = parts[0];
